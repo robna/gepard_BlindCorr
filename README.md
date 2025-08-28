@@ -1,6 +1,6 @@
 # gepardBlindCorr
 
-This repository contains Python scripts and Jupyter notebooks for microplastic data processing with GEPARD blind correction procedures. It is a focused fork of the [MPSchleiSediments](https://github.com/robna/MPSchleiSediments) repository, containing only the essential MPDB (Microplastic Database) processing scripts.
+This repository contains Python scripts and Jupyter notebooks for microplastic data processing with blind correction procedures intended for particle data produced by [GEPARD](https://gitlab.ipfdd.de/gepard/gepard). It is a focused fork of the [MPSchleiSediments](https://github.com/robna/MPSchleiSediments) repository, containing only the essential MPDB (Microplastic Database) processing scripts.
 
 ## What is this project about?
 
