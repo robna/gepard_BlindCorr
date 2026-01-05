@@ -1,0 +1,17 @@
+# Test correction configuration
+corrections:
+  # Environmental sample corrected by blind sample
+  "250606_Sterni_500_5_Particle_List.xlsx":
+    - "250627_Sterni_Blind_5_Particle_List.xlsx"
+
+# Output settings
+output:
+  format: "excel"
+  suffix: "_corrected"
+  directory: "results"
+  
+# Processing settings  
+settings:
+  create_synthetic_controls: true
+  log_eliminations: true
+  validate_files: true

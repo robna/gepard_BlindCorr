@@ -1,0 +1,17 @@
+# Test configuration with custom size matching
+corrections:
+  "test_sample_ABS_PE_PS.ods":
+    - "test_blind_ABS_PE_PS.ods"
+
+# Output settings
+output:
+  format: "excel"
+  suffix: "_corrected_longsize"
+  directory: "test_results"
+  
+# Processing settings with custom size matching
+settings:
+  create_synthetic_controls: true
+  log_eliminations: true
+  validate_files: true
+  size_matching_dimension: "size_1"  # Use Long Size dimension (standardized column name)

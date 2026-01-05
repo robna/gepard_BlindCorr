@@ -1,0 +1,62 @@
+# Particle Correction Configuration
+#
+# This file defines which particle datasets should be corrected by which control samples.
+# The correction process removes particles from target files that match particles found 
+# in the specified control samples (blanks, blinds, negative controls, etc.).
+#
+# SYNTAX:
+# corrections:
+#   target_file.xlsx:           # File to have particles removed from
+#     - control_file1.xlsx      # Control sample used to identify particles to remove
+#     - control_file2.xlsx      # Additional control sample
+#   
+# PROCESSING ORDER:
+# - If a control file is also listed as a target (needs correction itself), 
+#   it will be processed first before being used to correct other files
+# - Multiple control files for one target will be combined into a "synthetic control"
+# - Files are processed in dependency order to avoid circular references
+#
+# FILE PATHS:
+# - Use just filenames if files are in the data directory: sample.xlsx
+# - Use relative paths for subdirectories: subfolder/sample.xlsx  
+# - Use absolute paths if needed: /full/path/to/sample.xlsx
+#
+# OUTPUT:
+# - Corrected files are saved with "_corrected" suffix
+# - Output format matches input format (xlsx, csv, etc.) unless specified otherwise
+#
+# EXAMPLE WORKFLOW:
+# 1. environmental_sample.xlsx ← corrected by ← [blind_001.xlsx, blind_002.xlsx]
+# 2. blank_sample.xlsx ← corrected by ← lab_blank.xlsx
+# 3. environmental_sample.xlsx ← corrected by ← blank_sample.xlsx (after step 2)
+
+corrections:
+  # Environmental samples corrected by blind controls
+  environmental_sample_001.xlsx:
+    - blind_001.xlsx
+    - blind_002.xlsx
+  
+  environmental_sample_002.xlsx:
+    - blind_001.xlsx
+  
+  # Blank samples corrected by lab controls (processed first due to dependencies)
+  blank_sample_001.xlsx:
+    - lab_blank.xlsx
+  
+  # Environmental samples corrected by blank samples (after blank correction)
+  environmental_sample_001.xlsx:
+    - blank_sample_001.xlsx
+
+# Optional: Specify output settings
+output:
+  format: "excel"             # Default output format: excel, csv
+  suffix: "_corrected"        # Suffix added to corrected files
+  directory: "output"         # Output directory (relative to data directory)
+  
+# Optional: Processing settings
+settings:
+  create_synthetic_controls: true    # Combine multiple controls into synthetic sample
+  log_eliminations: true            # Save detailed logs of eliminated particles
+  validate_files: true              # Validate file structure before processing
+  size_matching_dimension: "geometric_mean"  # Size dimension for particle matching
+  # Options: "geometric_mean", "size_1", "size_2", "size_3", "area"
