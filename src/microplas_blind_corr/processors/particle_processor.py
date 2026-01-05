@@ -60,7 +60,7 @@ class ParticleProcessor:
         
     def exclude_polymers(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Remove particles with excluded polymer types.
+        Exclude particles based on polymer type
         
         Args:
             df: Particle data
@@ -70,12 +70,12 @@ class ParticleProcessor:
         """
         initial_count = len(df)
         
-        # Filter by polymer type
-        polymer_mask = ~df[self.column_mapping.polymer_type].isin(self.config.excluded_polymers)
+        # Filter by polymer type (use standardized column names)
+        polymer_mask = ~df['polymer_type'].isin(self.config.excluded_polymers)
         
         # Also filter by library entry if available
-        if self.column_mapping.library_entry in df.columns:
-            library_mask = ~df[self.column_mapping.library_entry].isin(self.config.excluded_polymers)
+        if 'library_entry' in df.columns:
+            library_mask = ~df['library_entry'].isin(self.config.excluded_polymers)
             polymer_mask = polymer_mask & library_mask
             
         df_filtered = df[polymer_mask].copy()
@@ -84,7 +84,6 @@ class ParticleProcessor:
         logger.info(f"Excluded {excluded_count} particles due to polymer type filtering")
         
         return df_filtered
-        
     def amplify_particles(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Amplify particles based on analyzed fraction to extrapolate to whole sample.
@@ -95,15 +94,15 @@ class ParticleProcessor:
         Returns:
             Amplified particle data
         """
-        if self.column_mapping.fraction_analysed not in df.columns:
+        if 'fraction_analysed' not in df.columns:
             logger.warning("Fraction analysed column not found. Skipping particle amplification.")
             return df
             
         # Fill NaN values with 1 (assuming whole sample analyzed)
-        df[self.column_mapping.fraction_analysed].fillna(1.0, inplace=True)
+        df['fraction_analysed'].fillna(1.0, inplace=True)
         
         # Calculate amplification factor
-        amplification_factor = 1.0 / df[self.column_mapping.fraction_analysed]
+        amplification_factor = 1.0 / df['fraction_analysed']
         
         # Round to nearest integer (can't have fractional particles)
         amplification_factor = amplification_factor.round().astype(int)
@@ -117,7 +116,7 @@ class ParticleProcessor:
                 new_particle = particle_row.copy()
                 # Create unique particle ID
                 if rep > 0:  # Keep original ID for first replica
-                    new_particle[self.column_mapping.particle_id] = f"{particle_row[self.column_mapping.particle_id]}_{rep}"
+                    new_particle['particle_id'] = f"{particle_row['particle_id']}_{rep}"
                 amplified_particles.append(new_particle)
                 
         if amplified_particles:
@@ -137,8 +136,8 @@ class ParticleProcessor:
         Returns:
             Data with geometric mean size column
         """
-        size_1 = df[self.column_mapping.size_1]
-        size_2 = df[self.column_mapping.size_2]
+        size_1 = df['size_1']
+        size_2 = df['size_2']
         
         # Calculate geometric mean, handling zero/negative values
         df['size_geom_mean'] = np.sqrt(np.maximum(size_1 * size_2, 0.01))
@@ -191,14 +190,14 @@ class ParticleProcessor:
             Data with standardized shape and color
         """
         # Standardize colors
-        if self.column_mapping.color in df.columns:
-            df[self.column_mapping.color] = df[self.column_mapping.color].replace(
+        if 'color' in df.columns:
+            df['color'] = df['color'].replace(
                 self.config.color_standardization
             )
             
         # Standardize shapes
-        if self.column_mapping.shape in df.columns:
-            df[self.column_mapping.shape] = df[self.column_mapping.shape].replace(
+        if 'shape' in df.columns:
+            df['shape'] = df['shape'].replace(
                 self.config.shape_standardization
             )
             
@@ -216,8 +215,8 @@ class ParticleProcessor:
         Returns:
             Data with particle ID as index
         """
-        if self.column_mapping.particle_id in df.columns:
-            df = df.set_index(self.column_mapping.particle_id)
+        if 'particle_id' in df.columns:
+            df = df.set_index('particle_id')
             
         return df
         
@@ -233,7 +232,7 @@ class ParticleProcessor:
         Returns:
             Tuple of (environmental_particles, blank_particles, blind_particles)
         """
-        sample_col = self.column_mapping.sample_name
+        sample_col = 'sample_name'
         
         # Create masks for different sample types
         env_mask = df[sample_col].map(sample_types) == 'environmental'

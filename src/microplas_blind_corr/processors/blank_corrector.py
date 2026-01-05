@@ -10,7 +10,7 @@ import pandas as pd
 from typing import Tuple
 import logging
 
-from ..config.settings import ColumnMapping
+from ..config.settings import ColumnMapping, ProcessingConfig
 
 
 logger = logging.getLogger(__name__)
@@ -19,14 +19,16 @@ logger = logging.getLogger(__name__)
 class BlankCorrector:
     """Processor for blank correction of particle data."""
     
-    def __init__(self, column_mapping: ColumnMapping):
+    def __init__(self, column_mapping: ColumnMapping, config: ProcessingConfig):
         """
         Initialize the blank corrector.
         
         Args:
             column_mapping: Column name mapping
+            config: Processing configuration including size matching settings
         """
         self.column_mapping = column_mapping
+        self.config = config
         
     def apply_blank_correction(self, environmental_particles: pd.DataFrame, 
                              blank_particles: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
@@ -72,18 +74,35 @@ class BlankCorrector:
                     matching_particles, blank_particle
                 )
                 
+                # Calculate size difference for logging
+                size_dim = self.config.size_matching_dimension
+                if size_dim == "geometric_mean":
+                    size_difference = abs(
+                        env_particles_copy.loc[eliminated_particle_id, 'size_geom_mean'] - 
+                        blank_particle['size_geom_mean']
+                    )
+                else:
+                    if size_dim in env_particles_copy.columns and size_dim in blank_particle.index:
+                        size_difference = abs(
+                            env_particles_copy.loc[eliminated_particle_id, size_dim] - 
+                            blank_particle[size_dim]
+                        )
+                    else:
+                        # Fallback to geometric mean
+                        size_difference = abs(
+                            env_particles_copy.loc[eliminated_particle_id, 'size_geom_mean'] - 
+                            blank_particle['size_geom_mean']
+                        )
+                
                 # Log the elimination
                 elimination_record = {
                     'blank_particle_id': blank_id,
                     'eliminated_particle_id': eliminated_particle_id,
-                    'sample_name': env_particles_copy.loc[eliminated_particle_id, self.column_mapping.sample_name],
-                    'polymer_type': env_particles_copy.loc[eliminated_particle_id, self.column_mapping.polymer_type],
-                    'color': env_particles_copy.loc[eliminated_particle_id, self.column_mapping.color],
-                    'shape': env_particles_copy.loc[eliminated_particle_id, self.column_mapping.shape],
-                    'size_difference': abs(
-                        env_particles_copy.loc[eliminated_particle_id, 'size_geom_mean'] - 
-                        blank_particle['blank_size_geom_mean']
-                    )
+                    'sample_name': env_particles_copy.loc[eliminated_particle_id, 'sample_name'],
+                    'polymer_type': env_particles_copy.loc[eliminated_particle_id, 'polymer_type'],
+                    'color': env_particles_copy.loc[eliminated_particle_id, 'color'],
+                    'shape': env_particles_copy.loc[eliminated_particle_id, 'shape'],
+                    'size_difference': size_difference
                 }
                 
                 elimination_log = pd.concat([
@@ -115,14 +134,12 @@ class BlankCorrector:
         Returns:
             DataFrame of matching environmental particles
         """
-        sample_col = self.column_mapping.sample_name
-        polymer_col = self.column_mapping.polymer_type
-        color_col = self.column_mapping.color
-        shape_col = self.column_mapping.shape
+        polymer_col = 'polymer_type'
+        color_col = 'color'
+        shape_col = 'shape'
         
-        # Create matching criteria
+        # Create matching criteria (don't match on sample name for blank correction)
         matching_mask = (
-            (environmental_particles[sample_col] == blank_particle[sample_col]) &
             (environmental_particles[polymer_col] == blank_particle[polymer_col]) &
             (environmental_particles[color_col] == blank_particle[color_col]) &
             (environmental_particles[shape_col] == blank_particle[shape_col])
@@ -132,9 +149,25 @@ class BlankCorrector:
         
         # Add size difference for sorting
         if len(matching_particles) > 0:
-            matching_particles['size_diff'] = abs(
-                matching_particles['size_geom_mean'] - blank_particle['blank_size_geom_mean']
-            )
+            # Get the size dimension to use for matching
+            size_dim = self.config.size_matching_dimension
+            
+            if size_dim == "geometric_mean":
+                # Use the calculated geometric mean
+                matching_particles['size_diff'] = abs(
+                    matching_particles['size_geom_mean'] - blank_particle['size_geom_mean']
+                )
+            else:
+                # Use the specified column directly
+                if size_dim in matching_particles.columns and size_dim in blank_particle.index:
+                    matching_particles['size_diff'] = abs(
+                        matching_particles[size_dim] - blank_particle[size_dim]
+                    )
+                else:
+                    logger.warning(f"Size dimension '{size_dim}' not found, falling back to geometric mean")
+                    matching_particles['size_diff'] = abs(
+                        matching_particles['size_geom_mean'] - blank_particle['size_geom_mean']
+                    )
             
         return matching_particles
         

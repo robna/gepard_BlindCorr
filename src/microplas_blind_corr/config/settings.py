@@ -55,11 +55,16 @@ class ProcessingConfig:
     
     # Size filtering
     size_filter_dimension: str = "size_1"  # Which dimension to use for filtering
-    size_filter_highpass: float = 50.0  # Minimum size in micrometers
+    size_filter_highpass: float = 0.0  # Minimum size in micrometers (no lower limit)
     size_filter_lowpass: float = 5000.0  # Maximum size in micrometers
+    
+    # Size matching for correction
+    size_matching_dimension: str = "geometric_mean"  # Which dimension to use for size matching
+    # Options: "geometric_mean", "Long Size (µm)", "Short Size (µm)", "Height (µm)", "Area (µm²)"
     
     # Polymer exclusion list (contamination and dyes)
     excluded_polymers: List[str] = field(default_factory=lambda: [
+        'unknown',  # Add unknown polymer types to exclusion list
         'Poly (tetrafluoro ethylene)',
         'PV23',
         'Parafilm',

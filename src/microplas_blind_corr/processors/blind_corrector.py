@@ -45,10 +45,10 @@ class BlindCorrector:
             logger.warning("No blind particles provided")
             return pd.DataFrame()
             
-        sample_col = self.column_mapping.sample_name
-        polymer_col = self.column_mapping.polymer_type
-        color_col = self.column_mapping.color
-        shape_col = self.column_mapping.shape
+        sample_col = 'sample_name'
+        polymer_col = 'polymer_type'
+        color_col = 'color'
+        shape_col = 'shape'
         
         # Count unique blind samples
         num_blind_samples = blind_particles[sample_col].nunique()
@@ -113,7 +113,7 @@ class BlindCorrector:
         total_eliminated = 0
         
         # Process each environmental sample separately
-        sample_col = self.column_mapping.sample_name
+        sample_col = 'sample_name'
         
         for sample_name, sample_group in environmental_particles.groupby(sample_col):
             eliminated_in_sample = 0
@@ -138,9 +138,9 @@ class BlindCorrector:
                             'blind_sample_name': blind_particle[sample_col],
                             'eliminated_particle_id': eliminated_particle_id,
                             'sample_name': sample_name,
-                            'polymer_type': blind_particle[self.column_mapping.polymer_type],
-                            'color': blind_particle[self.column_mapping.color],
-                            'shape': blind_particle[self.column_mapping.shape],
+                            'polymer_type': blind_particle['polymer_type'],
+                            'color': blind_particle['color'],
+                            'shape': blind_particle['shape'],
                             'size_difference': abs(
                                 env_particles_copy.loc[eliminated_particle_id, 'size_geom_mean'] - 
                                 blind_particle['blind_size_geom_mean']
@@ -178,9 +178,9 @@ class BlindCorrector:
         Returns:
             DataFrame of matching particles
         """
-        polymer_col = self.column_mapping.polymer_type
-        color_col = self.column_mapping.color  
-        shape_col = self.column_mapping.shape
+        polymer_col = 'polymer_type'
+        color_col = 'color'  
+        shape_col = 'shape'
         
         # Create matching criteria
         matching_mask = (
