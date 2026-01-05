@@ -1,0 +1,17 @@
+# Test configuration for debugging with simplified ABS/PE/PS datasets
+corrections:
+  # Test sample corrected by test blind sample
+  "test_sample_ABS_PE_PS.ods":
+    - "test_blind_ABS_PE_PS.ods"
+
+# Output settings
+output:
+  format: "excel"
+  suffix: "_corrected"
+  directory: "test_results"
+  
+# Processing settings  
+settings:
+  create_synthetic_controls: true
+  log_eliminations: true
+  validate_files: true

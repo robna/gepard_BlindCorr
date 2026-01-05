@@ -1,0 +1,64 @@
+# Default configuration for microplastics blind correction processing
+# This file can be customized for different datasets and research contexts
+
+# Size filtering parameters
+size_filter_dimension: "size_1"  # Dimension to use for filtering: size_1, size_2, or size_geom_mean
+size_filter_highpass: 50.0  # Minimum size in micrometers  
+size_filter_lowpass: 5000.0  # Maximum size in micrometers
+
+# Polymer exclusion list - particles with these polymers will be excluded
+# Typically includes contamination sources and non-specific dyes
+excluded_polymers:
+  - "Poly (tetrafluoro ethylene)"
+  - "PV23"
+  - "Parafilm" 
+  - "PR101"
+  - "PB15"
+  - "PW6"
+  - "PBr29"
+  - "PY17based"
+  - "PY74"
+  - "PB15 + PV23"
+  - "PV23 + PB15"
+  - "PB15 + TiO2"
+  - "PB23 + PY17based"
+  - "Parafilm/PE"
+  - "PB15+PY17"
+  - "PY17+PB15"
+  - "PV23+PB15+TiO2"
+  - "PB15+TiO2"
+  - "TiO2+PB15"
+  - "PB15+PV23"
+
+# Color standardization - map various color names to standard categories
+color_standardization:
+  "transparent": "unspecific"
+  "undetermined": "unspecific"
+  "white": "unspecific"
+  "non-determinable": "unspecific"
+  "grey": "unspecific"
+  "brown": "unspecific"
+  "black": "unspecific"
+  "violet": "blue"
+
+# Shape standardization - combine similar shapes into broader categories
+shape_standardization:
+  "spherule": "irregular"
+  "irregular": "irregular"
+  "flake": "irregular"
+  "foam": "irregular"
+  "granule": "irregular"
+  "undetermined": "irregular"
+
+# Sample identification patterns
+# Samples containing these patterns will be identified as blank samples
+blank_sample_patterns:
+  - "blank"
+  - "Blank"
+  - "BLANK"
+
+# Samples containing these patterns will be identified as blind samples  
+blind_sample_patterns:
+  - "blind"
+  - "Blind"
+  - "BLIND"
