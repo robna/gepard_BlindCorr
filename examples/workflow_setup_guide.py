@@ -66,7 +66,7 @@ def setup_example_workflow():
     organizer = FileOrganizer(EXCEL_COLUMN_MAPPING)
     
     # Example: validate our test file
-    test_file = Path("test_data/250606_Sterni_500_5_Particle_List.xlsx")
+    test_file = Path("data/250606_Sterni_500_5_Particle_List.xlsx")
     if test_file.exists():
         print(f"   Validating example file: {test_file.name}")
         validation = organizer.validate_file_structure(test_file)

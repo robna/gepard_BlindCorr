@@ -35,7 +35,7 @@ def main():
     """Main processing workflow."""
     
     # Configure paths
-    data_dir = Path("test_data")
+    data_dir = Path("data")
     output_dir = Path("output") 
     config_file = Path("configs/default_config.yaml")
     

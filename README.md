@@ -202,7 +202,7 @@ config.excluded_polymers.append("My_Custom_Contaminant")
 ├── examples/                          # Example scripts and tutorials
 ├── configs/                           # Configuration files
 ├── tests/                            # Test suite
-└── test_data/                        # Example data files
+└── data/                        # Example data files
 ```
 
 ## Migration from Legacy Version

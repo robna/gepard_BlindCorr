@@ -46,7 +46,7 @@ class FileOrganizer:
             Dictionary with categorized file paths
         """
         if env_patterns is None:
-            env_patterns = ['sample', 'environmental', 'env']
+            env_patterns = ['sample', 'environmental', 'env', 'sediment', 'water', 'biota']
         if blank_patterns is None:
             blank_patterns = ['blank', 'control']
         if blind_patterns is None:
@@ -86,12 +86,18 @@ class FileOrganizer:
                         file_type = 'blind'
                         break
                         
-            # Check for environmental patterns (most general)
+            # Check for environmental patterns
             if file_type == 'unclassified':
                 for pattern in env_patterns:
                     if pattern.lower() in file_name_lower:
                         file_type = 'environmental'
                         break
+                        
+            # If still unclassified and it's an Excel file containing "particle",
+            # assume it's environmental (default for particle data files)
+            if file_type == 'unclassified':
+                if any(keyword in file_name_lower for keyword in ['particle', 'particles']):
+                    file_type = 'environmental'
                         
             categorized_files[file_type].append(file_path)
             

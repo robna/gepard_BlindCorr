@@ -53,21 +53,21 @@ def main():
     
     # Environmental sample files
     environmental_files = [
-        "test_data/250606_Sterni_500_5_Particle_List.xlsx"  # We only have one example
-        # "test_data/sample_002_particles.xlsx",
-        # "test_data/sample_003_particles.xlsx",
+        "data/250606_Sterni_500_5_Particle_List.xlsx"  # We only have one example
+        # "data/sample_002_particles.xlsx",
+        # "data/sample_003_particles.xlsx",
     ]
     
     # Blank sample files (these would be separate files in reality)
     blank_files = [
-        # "test_data/blank_001_particles.xlsx",
-        # "test_data/blank_002_particles.xlsx",
+        # "data/blank_001_particles.xlsx",
+        # "data/blank_002_particles.xlsx",
     ]
     
     # Blind sample files (these would be separate files in reality)
     blind_files = [
-        # "test_data/blind_001_particles.xlsx", 
-        # "test_data/blind_002_particles.xlsx",
+        # "data/blind_001_particles.xlsx", 
+        # "data/blind_002_particles.xlsx",
     ]
     
     # === LOAD DATA ===

@@ -40,7 +40,7 @@ Examples:
     # Analyze command
     analyze_parser = subparsers.add_parser('analyze', help='Analyze files in a directory')
     analyze_parser.add_argument('directory', type=Path, help='Directory containing Excel files')
-    analyze_parser.add_argument('--env-patterns', nargs='+', default=['sample', 'environmental', 'env'],
+    analyze_parser.add_argument('--env-patterns', nargs='+', default=['sample', 'environmental', 'env', 'sediment', 'water', 'biota'],
                                help='Patterns to identify environmental files')
     analyze_parser.add_argument('--blank-patterns', nargs='+', default=['blank', 'control'],
                                help='Patterns to identify blank files')
