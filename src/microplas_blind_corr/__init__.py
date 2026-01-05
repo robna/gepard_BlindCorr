@@ -12,18 +12,20 @@ This package provides functionality for:
 """
 
 __version__ = "2.0.0"
-__author__ = "Robert Naumann"
+__author__ = "Robin Lenz"
 
 from .processors.particle_processor import ParticleProcessor
 from .processors.blank_corrector import BlankCorrector
 from .processors.blind_corrector import BlindCorrector
 from .data_loaders.excel_loader import ExcelLoader
 from .config.settings import ProcessingConfig
+from .workflows.correction_workflow import CorrectionWorkflow
 
 __all__ = [
     "ParticleProcessor",
     "BlankCorrector", 
     "BlindCorrector",
     "ExcelLoader",
-    "ProcessingConfig"
+    "ProcessingConfig",
+    "CorrectionWorkflow"
 ]
